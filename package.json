@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@geoapify/geocoder-autocomplete": "^2.0.1",
+    "leaflet-geosearch": "^3.11.1"
+  }
+}
