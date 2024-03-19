@@ -386,7 +386,7 @@ body {
 }
 
 .results__item {
-  height: 8rem;
+  height: 10rem;
   display: flex;
   border-bottom: 1px solid #d7e4c0;
 }
