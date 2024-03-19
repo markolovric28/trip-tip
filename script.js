@@ -382,7 +382,6 @@ class Form {
         return alert("Fill out all fields completely!");
 
       trip = new Restaurants(typeR, cuisine, proximityR);
-      console.log(typeR, cuisine, proximityR);
     }
 
     btnForm.classList.add("no_display");
@@ -489,7 +488,7 @@ class Attractions extends Results {
 
       this.renderSpinner();
 
-      const attrRender = `https://api.geoapify.com/v2/places?categories=${type}&conditions=${fee}&filter=circle:${coordsMap[1]},${coordsMap[0]},5000&bias=proximity:${coordsMap[1]},${coordsMap[0]}&lang=en&limit=15&apiKey=${this.apiKey}
+      const attrRender = `https://api.geoapify.com/v2/places?categories=${type}&conditions=${fee}&filter=circle:${coordsMap[1]},${coordsMap[0]},5000&bias=proximity:${coordsMap[1]},${coordsMap[0]}&lang=en&limit=10&apiKey=${this.apiKey}
     `;
 
       const res = await fetch(attrRender);
@@ -528,6 +527,7 @@ class Attractions extends Results {
           res.properties.address_line1
         );
       });
+
       this.renderImages();
 
       this.parentElement.insertAdjacentHTML("afterbegin", rows);
@@ -568,78 +568,83 @@ class Attractions extends Results {
   }
 
   async makeRoute(coords) {
-    try {
-      const turnByTurnMarkerStyle = {
-        radius: 5,
-        fillColor: "#fff",
-        color: "#555",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 1,
-      };
+    // try {
+    const turnByTurnMarkerStyle = {
+      radius: 5,
+      fillColor: "#fff",
+      color: "#555",
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 1,
+    };
 
-      const routeRender = `https://api.geoapify.com/v1/routing?waypoints=${coords.join(
-        "|"
-      )}&mode=walk&apiKey=${this.apiKey}`;
+    const routeRender = `https://api.geoapify.com/v1/routing?waypoints=${coords.join(
+      "|"
+    )}&mode=walk&apiKey=${this.apiKey}`;
 
-      const res = await fetch(routeRender);
+    // console.log(coords.join("|"));
 
-      const data = await res.json();
+    const res = await fetch(routeRender);
 
-      let routeA = L.geoJSON(data, {
-        style: (feature) => {
-          return {
-            color: "rgba(255, 20, 20)",
-            weight: 5,
-          };
-        },
+    const data = await res.json();
+
+    console.log(data);
+
+    let routeA = L.geoJSON(data, {
+      style: (feature) => {
+        return {
+          color: "rgba(255, 20, 20)",
+          weight: 5,
+        };
+      },
+    })
+      .bindPopup((layer) => {
+        return `${layer.feature.properties.distance} ${layer.feature.properties.distance_units}, ${layer.feature.properties.time}`;
       })
-        .bindPopup((layer) => {
-          return `${layer.feature.properties.distance} ${layer.feature.properties.distance_units}, ${layer.feature.properties.time}`;
+      .addTo(map);
+
+    // collect all transition positions
+    const turnByTurns = [];
+    data.features.forEach((feature) =>
+      feature.properties.legs.forEach((leg, legIndex) =>
+        leg.steps.forEach((step) => {
+          const pointFeature = {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates:
+                feature.geometry.coordinates[legIndex][step.from_index],
+            },
+            properties: {
+              instruction: step.instruction.text,
+            },
+          };
+          turnByTurns.push(pointFeature);
         })
-        .addTo(map);
-
-      // collect all transition positions
-      const turnByTurns = [];
-      data.features.forEach((feature) =>
-        feature.properties.legs.forEach((leg, legIndex) =>
-          leg.steps.forEach((step) => {
-            const pointFeature = {
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates:
-                  feature.geometry.coordinates[legIndex][step.from_index],
-              },
-              properties: {
-                instruction: step.instruction.text,
-              },
-            };
-            turnByTurns.push(pointFeature);
-          })
-        )
-      );
-
-      let routeB = L.geoJSON(
-        {
-          type: "FeatureCollection",
-          features: turnByTurns,
-        },
-        {
-          pointToLayer: function (feature, latlng) {
-            return L.circleMarker(latlng, turnByTurnMarkerStyle);
-          },
-        }
       )
-        .bindPopup((layer) => {
-          return `${layer.feature.properties.instruction}`;
-        })
-        .addTo(map);
+    );
 
-      routeMarker.push(routeA, routeB);
-    } catch (err) {
-      return alert(`There is something wrong: ${err}`);
-    }
+    let routeB = L.geoJSON(
+      {
+        type: "FeatureCollection",
+        features: turnByTurns,
+      },
+      {
+        pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, turnByTurnMarkerStyle);
+        },
+      }
+    )
+      .bindPopup((layer) => {
+        return `${layer.feature.properties.instruction}`;
+      })
+      .addTo(map);
+
+    routeMarker.push(routeA, routeB);
+    // } catch (err) {
+    //   // return alert(`There is something wrong: ${err}`);
+    //   console.log(err);
+    // }
   }
 }
 
@@ -717,7 +722,6 @@ class Restaurants extends Results {
           </ul>`;
 
       namesAtt.push(res.properties.address_line1 + ` ${res.properties.city}`);
-      coordsResults.push(res.geometry.coordinates);
 
       this.renderMarker(
         res.geometry.coordinates[1],
