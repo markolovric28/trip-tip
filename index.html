@@ -18,6 +18,11 @@
       crossorigin=""
     />
 
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"
+    />
+
     <script
       src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
@@ -25,25 +30,205 @@
     ></script>
 
     <link rel="stylesheet" href="style.css" />
-    <script type="module" defer src="script.js"></script>
+    <!-- <script type="module" defer src="js/script.js"></script> -->
     <title>Trip-Tip</title>
   </head>
   <body>
     <div class="sidebar">
       <h1 class="title">Trip-Tip</h1>
-      <div class="categories">
-        <button class="btn_categories">Attractions</button>
-        <button class="btn_categories">Restaurants</button>
+      <span class="form__title no_display">Explore</span>
+      <form class="form grid__main no_display">
+        <div class="main__input-container no_display">
+          <!-- <span class="form__title">Explore</span>
+      <form class="form grid__main">
+        <div class="main__input-container"> -->
+          <div class="row__main">
+            <label class="form__label label__main"
+              >What do you want to see?</label
+            >
+            <select class="form__input input__main" id="main__input">
+              <option value="" style="display: none"></option>
+              <option value="attractions">Attractions</option>
+              <option value="restaurants">Restaurants</option>
+            </select>
+          </div>
+          <div class="icon__container">
+            <ion-icon
+              class="form__icon forward"
+              id="forward"
+              name="arrow-forward-outline"
+            ></ion-icon>
+          </div>
+        </div>
+
+        <!-- <form class="form form__grid form__attractions"> -->
+        <div class="att__text no_display">
+          <div class="form__row">
+            <label class="form__label">Type</label>
+            <select class="form__input attractions__type">
+              <option value="" style="display: none"></option>
+              <option value="building.tourism">Historical monuments</option>
+              <option
+                value="entertainment.museum,entertainment.culture.arts_centre,entertainment.culture.gallery"
+              >
+                Musems&Art Galleries
+              </option>
+              <option value="leisure.park">Parks</option>
+              <option value="building.place_of_worship">
+                Religious tourism
+              </option>
+            </select>
+          </div>
+          <div class="form__row">
+            <label class="form__label">Fee</label>
+            <select class="form__input attractions__fee">
+              <option value="" style="display: none"></option>
+              <option value="no_fee">Free entry</option>
+              <option value="fee">Requires ticket</option>
+            </select>
+          </div>
+          <div class="form__row">
+            <label class="form__label">Proximity</label>
+            <select class="form__input attractions__proximity">
+              <option value="" style="display: none"></option>
+              <option value="in_city_attractions">In the city</option>
+              <option value="5_min_attractions">5min walk</option>
+              <option value="10_min_attractions">10min walk</option>
+            </select>
+          </div>
+          <div class="icon__container">
+            <ion-icon
+              class="form__icon back"
+              id="back"
+              name="arrow-back-outline"
+            ></ion-icon>
+          </div>
+        </div>
+        <!-- </form>
+
+      <form class="form form__grid form__restaurants"> -->
+        <div class="res__text no_display">
+          <div class="form__row">
+            <label class="form__label">Type of the restaurant</label>
+            <select class="form__input restaurants__type">
+              <option value="" style="display: none"></option>
+              <option value="catering.restaurant">All</option>
+              <option value="vegetarian">Vegetarian/Vegan</option>
+              <option value="vegan">Vegan</option>
+            </select>
+          </div>
+          <div class="form__row">
+            <label class="form__label">Cuisine</label>
+            <select class="form__input restaurants__cuisine">
+              <option value="" style="display: none"></option>
+              <option value="catering.restaurant.regional">Local</option>
+              <option value="catering.restaurant.mediterranean">
+                European
+              </option>
+              <option value="catering.restaurant.asian">Asian</option>
+              <option value="catering.restaurant.american">American</option>
+              <option value="catering.restaurant">All</option>
+            </select>
+          </div>
+          <div class="form__row">
+            <label class="form__label">Proximity</label>
+            <select class="form__input restaurants__proximity">
+              <option value="" style="display: none"></option>
+              <option value="in_city_restaurants">In the city</option>
+              <option value="5_min_restaurants">5min walk</option>
+              <option value="10_min_restaurants">10min walk</option>
+            </select>
+          </div>
+          <div class="icon__container">
+            <ion-icon
+              class="form__icon back"
+              id="back"
+              name="arrow-back-outline"
+            ></ion-icon>
+          </div>
+        </div>
+        <!-- </form> -->
+      </form>
+      <button class="btn form__btn btn__pressdown no_display">
+        Show on map
+      </button>
+
+      <div class="results__container no_display">
+        <div class="results">
+          <!-- <ul class="results__list">
+            <li class="results__item">
+              <div class="results__photo-container">
+              <img class="results__photo" alt="text" />
+            </div>
+            <div class="results__data">
+              <h4 class="results__name">Title</h4>
+              <div class="data__flex">
+                <p class="results__opening-time">Opening time</p>
+                <a href="#" class="results__webpage">Webpage</a>
+              </div>
+            </div>
+          </li>
+          </ul> -->
+
+          <!-- <ul class="results__list">
+            <li class="results__item">
+              <div class="results__data-restaurants">
+                <h4 class="results__name">${res.properties.address_line1}</h4>
+                <div class="data__flex-restaurants">
+                  <p></p>
+                  <a></a>
+                </div>
+              </div>
+            </li>
+          </ul> -->
+
+          <ul class="results__list"></ul>
+        </div>
+
+        <div class="btn__results-container">
+          <button class="btn btn__results btn__back">Back</button>
+          <button class="btn btn__results btn__route">Make a route!</button>
+        </div>
       </div>
+      <footer class="footer">
+        <a href="https://www.pexels.com">Photos provided by Pexels</a>
+        <span>&copy; Copyright by Marko Lovric</span>
+      </footer>
     </div>
+
     <div id="map" class="map_box">
       <div class="select_city">
         <h2 class="select_city_welcome">Welcome to Trip-Tip!</h2>
         <div class="autocomplete_box">
           <h3 class="select_city_title">Your trip destination?</h3>
-          <div class="autocomplete-container" id="autocomplete-container"></div>
+          <div class="autocomplete_container" id="autocomplete_container">
+            <div class="input_container">
+              <input
+                class="input"
+                type="text"
+                placeholder="e.g. New York, Tokyo, Berlin"
+              />
+              <ion-icon class="clear_button" name="close-outline"></ion-icon>
+            </div>
+          </div>
+          <button class="btn click">Take me there!</button>
         </div>
       </div>
     </div>
+    <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="node_modules/@geoapify/leaflet-address-search-plugin/dist/L.Control.GeoapifyAddressSearch.min.css"
+    />
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>

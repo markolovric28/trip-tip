@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@geoapify/geocoder-autocomplete": "^2.0.1",
-    "leaflet-geosearch": "^3.11.1"
+    "@geoapify/leaflet-address-search-plugin": "^1.0.2",
+    "leaflet-geosearch": "^3.11.1",
+    "pexels": "^1.4.0"
   }
 }
