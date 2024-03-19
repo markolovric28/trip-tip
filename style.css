@@ -466,3 +466,43 @@ body {
     transform: rotate(360deg);
   }
 }
+
+/* QUERIES */
+@media (max-width: 96rem) {
+  .select_city_welcome {
+    font-size: 5rem;
+  }
+}
+
+@media (max-width: 87.25rem) {
+  .select_city_welcome {
+    font-size: 4.5rem;
+  }
+}
+
+@media (max-width: 59em) {
+  html {
+    /* 8px / 16px = 0.50 (50%) */
+    font-size: 50%;
+  }
+
+  .select_city_welcome {
+    font-size: 4rem;
+  }
+
+  .sidebar {
+    flex-basis: 40rem;
+  }
+
+  .label__main {
+    font-size: 1.4rem;
+  }
+
+  .results {
+    height: 250px;
+  }
+
+  .results__item {
+    height: 6rem;
+  }
+}
